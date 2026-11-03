@@ -1,0 +1,9 @@
+node_modules
+dist
+.env
+.DS_Store
+scripts/.clip-embeddings.json
+scripts/.trim-report.json
+/Badlooking-Brush-2.otf
+/a-song-for-jennifer-3.ttf
+.claude/

@@ -1,0 +1,28 @@
+{
+  "name": "in-a-sea-of-stars",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "vite build",
+    "preview": "vite preview --host 0.0.0.0",
+    "build:archive": "node scripts/build-archive.mjs",
+    "analyze": "node scripts/analyze-archive.mjs",
+    "inference": "node scripts/inference-server.mjs",
+    "sync": "node scripts/sync-predictions.mjs"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.58.0",
+    "three": "^0.180.0"
+  },
+  "devDependencies": {
+    "@huggingface/transformers": "^3.8.1",
+    "@tensorflow-models/mobilenet": "^2.1.1",
+    "@tensorflow/tfjs": "^4.22.0",
+    "@tensorflow/tfjs-backend-wasm": "^4.22.0",
+    "dotenv": "^16.4.7",
+    "sharp": "^0.34.4",
+    "vite": "^7.1.0"
+  }
+}

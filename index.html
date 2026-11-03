@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#1247af" />
+  <title>In a Sea of Stars — Uncertain Archive</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@300;400;700&family=Patrick+Hand&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <div id="app">
+    <div id="world" aria-label="Interactive ocean of paper stars"></div>
+    <div class="sea-vignette" aria-hidden="true"></div>
+    <!-- Crayon look: wobbly edges + waxy speckle, applied with filter:url(#crayon) in style.css -->
+    <svg class="svg-defs" width="0" height="0" aria-hidden="true" focusable="false">
+      <filter id="crayon" x="-4%" y="-25%" width="108%" height="150%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.75" numOctaves="2" seed="3" result="noise" />
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="1.8" xChannelSelector="R" yChannelSelector="G" result="wobble" />
+        <feTurbulence type="fractalNoise" baseFrequency="1.4" numOctaves="1" seed="11" result="grain" />
+        <feColorMatrix in="grain" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -2.4 2.0" result="speckle" />
+        <feComposite in="wobble" in2="speckle" operator="in" />
+      </filter>
+    </svg>
+    <div class="crayon-grain" aria-hidden="true"></div>
+    <aside class="hud-left">
+      <span class="hud-title">A LITTLE VOYAGE</span>
+      <span>W A S D <span class="dim">or</span> ↑ ← ↓ → <span class="dim">to sail</span></span>
+      <span>Click a nearby star <span class="dim">or press</span> E <span class="dim">to retrieve</span></span>
+    </aside>
+    <aside class="hud-right">
+      <span id="star-count">00 stars adrift</span>
+      <button id="add-image" class="quiet-button" type="button">+ Release a star</button>
+      <input id="upload-input" type="file" accept="image/*" hidden />
+    </aside>
+    <div id="nearby-prompt" class="nearby-prompt" aria-live="polite"></div>
+    <button id="about-open" class="eyebrow" type="button" aria-haspopup="dialog">IN A SEA OF STARS · TECH B / MODULE 02</button>
+    <!-- About: opens over a blue blur when the bottom line is clicked -->
+    <div id="about" class="about" role="dialog" aria-modal="true" aria-labelledby="about-title" aria-hidden="true">
+      <div class="about-page">
+        <h1 id="about-title" class="about-title">In a Sea of Stars</h1>
+        <p class="about-lead">An uncertain archive of things that might be called a star — a starfish, a trophy, a song, a stranger's face, a chair.</p>
+        <p>You drift through it in a paper boat, folded from grid paper the way a child folds a first ship: small, light, not quite sure where it is going.</p>
+        <p>Each paper star carries one image. Come close, and it shows its own light.</p>
+        <h2>How the stars glow</h2>
+        <ul>
+          <li><b>Brightness</b> — how strongly three machines read the image as a star.</li>
+          <li><b>Colour</b> — the image's own colour, softened into light.</li>
+          <li><b>A slow drift</b> between lavender and mist blue — the machines disagree.</li>
+          <li><b>A quiet pearl glow</b> — no one could read it yet. Unknown is not the same as unrelated.</li>
+        </ul>
+        <h2>Three ways of seeing</h2>
+        <ul>
+          <li><b>Teachable Machine</b> learned my own five categories — Direct, Named, Represented, Associated, Unrelated — from this archive. It has learned my habits as much as it has learned stars.</li>
+          <li><b>CLIP</b> compares each picture with written sentences about what a star can mean.</li>
+          <li><b>MobileNet</b> names the objects it recognises, then looks for them in a small star vocabulary. When it finds nothing, the star simply stays unnamed.</li>
+        </ul>
+        <p>Their readings are guesses, not verdicts. Retrieve any star — bright or quiet — to see its photograph, the three readings, and what other visitors saw in it.</p>
+        <p class="about-end">Not everything that matters has to shine.</p>
+        <button id="about-close" class="about-close" type="button">back to the sea</button>
+      </div>
+    </div>
+    <div id="modal" class="modal" aria-hidden="true">
+      <div class="modal-wash" id="modal-wash"></div>
+      <button class="close-button" id="close-card" aria-label="Close photograph">×</button>
+      <section class="polaroid" role="dialog" aria-modal="true" aria-labelledby="card-title">
+        <div class="photo-frame"><img id="card-image" alt="Retrieved archive image" /></div>
+        <div class="photo-bottom">
+          <div class="readings">
+            <h2 id="card-title">Conclusion</h2>
+            <div class="reading-row" title="Teachable Machine"><span>TM</span><div class="mini-track"><div id="bar-tm" class="mini-fill tm"></div></div></div>
+            <div class="reading-row" title="CLIP"><span>CLIP</span><div class="mini-track"><div id="bar-clip" class="mini-fill clip"></div></div></div>
+            <div class="reading-row" title="MobileNet"><span>MN</span><div class="mini-track"><div id="bar-mn" class="mini-fill mn"></div></div></div>
+            <span class="demo-label" id="demo-label">NOT YET READ BY THE MACHINES</span>
+          </div>
+          <div class="card-words"><p id="card-quote"></p><small id="card-id"></small><a id="card-credit" class="card-credit" target="_blank" rel="noopener" hidden></a></div>
+        </div>
+        <div class="card-actions">
+          <button id="write-toggle" class="text-link" type="button">What do you see in this star?</button>
+          <button id="read-toggle" class="text-link" type="button">See what others see</button>
+        </div>
+        <div id="write-panel" class="card-panel" hidden>
+          <label for="note-input">A thought, a memory, a name...</label>
+          <textarea id="note-input" rows="2" maxlength="500" placeholder="Leave a thought..."></textarea>
+          <button id="save-note" class="small-action" type="button">Keep this note locally</button>
+        </div>
+        <div id="read-panel" class="card-panel" hidden><p id="notes-list">No notes here yet.</p><small id="notes-source"></small></div>
+      </section>
+    </div>
+    <div id="toast" role="status" aria-live="polite"></div>
+  </div>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
